@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/css/master.css">
+    <title>{{pageTitle}}</title>
+  </head>
+  <body>
+    <form class="todoForm" action="/toDo" method="post">
+      <input type="text" name="newTodo" value="" placeholder="Todo, pls">
+      <input type="submit" name="submit" value="Sumbit!">
+    </form>
+
+    <form class="todoList" action="/toDone" method="post">
+
+      <ul>
+        {{#todoList}}
+        <li><button type="submit" name="newToDone" value="{{.}}">Donezo</button>{{.}}</li>
+        {{/todoList}}
+      </ul>
+
+      <h1>ToDone</h1>
+      <ul>
+        {{#toDoneList}}
+        <li>{{.}}</li>
+        {{/toDoneList}}
+      </ul>
+    </form>
+  </body>
+</html>
