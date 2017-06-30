@@ -11,20 +11,24 @@
       <input type="submit" name="submit" value="Sumbit!">
     </form>
 
-    <form class="todoList" action="/toDone" method="post">
+
 
       <ul>
-        {{#todoList}}
-        <li><button type="submit" name="newToDone" value="{{.}}">Donezo</button>{{.}}</li>
-        {{/todoList}}
+        {{#notdone}}
+        <li>
+          <form class="todoList" action="/toDone" method="post">
+          <button type="submit" name="newToDone" value={{id}}>Donezo</button>{{task}}
+          </form>
+        </li>
+        {{/notdone}}
       </ul>
 
       <h1>ToDone</h1>
       <ul>
-        {{#toDoneList}}
-        <li>{{.}}</li>
-        {{/toDoneList}}
+        {{#done}}
+        <li>{{task}}</li>
+        {{/done}}
       </ul>
-    </form>
+
   </body>
 </html>

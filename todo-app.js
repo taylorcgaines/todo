@@ -2,42 +2,59 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const mustache = require('mustache-express')
+var models = require("./models")
 
-app.listen(3000,function(){
+app.listen(3000, function() {
   console.log("here I go!")
 })
 
-app.engine('mustache', mustache() )
+app.engine('mustache', mustache())
 app.set('view engine', 'mustache');
 
 app.use(express.static('public'))
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 
-var todoList = [];
-var toDoneList = [];
+app.get('/', function(req, res) {
+  models.toDos.findAll({
+    where: {
+      done: false
+    }
+  }).then(function(notdone) {
+    models.toDos.findAll({
+        where: {
+          done: true
+        }
+      })
+      .then(function(done) {
+        res.render("home", {
+          notdone: notdone,
+          done: done
+        })
+      })
+  })
+})
 
-app.get('/', function(req,res){
-    res.render("home",{
-      pageTitle: "Home!",
-      todoList: todoList,
-      toDoneList: toDoneList
+app.post('/toDo', function(req, res) {
+  const todo = models.toDos.build({
+    task: req.body.newTodo,
+    done: false
+  })
+  todo.save().then(function() {
+    res.redirect("/")
+  })
+})
+
+app.post('/toDone', function(req, res) {
+  models.toDos.findOne({
+    where:{
+      id: parseInt(req.body.newToDone)
+    }
+  })
+  .then(function(foundItem){
+      foundItem.done = true;
+      foundItem.save()
     })
-})
-
-app.post('/toDo', function(req,res){
-  // Grabs the field by its name from the request
-  let todo = req.body.newTodo;
-  todoList.push(todo)
-  console.log("todo",todoList)
-  res.redirect("/")
-})
-
-app.post('/toDone', function(req,res){
-  let toDone = req.body.newToDone;
-  toDoneList.push(toDone)
-  let getMeOut = todoList.indexOf(toDone)
-  todoList.splice(getMeOut,1)
-  console.log("toDone", toDoneList)
-
-  res.redirect("/")
-})
+    res.redirect("/")
+  })
